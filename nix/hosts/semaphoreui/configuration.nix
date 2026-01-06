@@ -114,7 +114,7 @@
         echo "Found directory at $PASSWORD_FILE; removing so the secret file can be created."
         rm -rf "$PASSWORD_FILE"
       fi
-      if [ ! -f "$PASSWORD_FILE" ]; then
+      if [ ! -s "$PASSWORD_FILE" ]; then
         echo "Generating new postgres password..."
         ${pkgs.openssl}/bin/openssl rand -base64 32 > "$PASSWORD_FILE"
         chmod 640 "$PASSWORD_FILE"

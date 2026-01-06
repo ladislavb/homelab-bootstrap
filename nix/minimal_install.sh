@@ -3,30 +3,10 @@
 
 set -euo pipefail
 
-# Check if hostname is provided
-if [ $# -ne 1 ]; then
-  echo "Usage: $0 <hostname>"
-  echo "Example: $0 semaphoreui"
-  exit 1
-fi
-
-HOSTNAME="$1"
 DISK="/dev/sda"
 MOUNT="/mnt"
 
-# Validate that host configuration exists
-if [ ! -d "hosts/$HOSTNAME" ]; then
-  echo "ERROR: Host configuration 'hosts/$HOSTNAME' does not exist!"
-  echo ""
-  echo "Available hosts:"
-  ls -1 hosts/ | grep -v "^README" || echo "  (none found)"
-  echo ""
-  echo "Usage: $0 <hostname>"
-  echo "Example: $0 semaphoreui"
-  exit 1
-fi
-
-echo "=== Installing host: $HOSTNAME ==="
+echo "=== Installing host ==="
 
 echo "=== Preflight: unmounting /mnt and disabling swap (if any) ==="
 umount -R /mnt 2>/dev/null || true
@@ -74,6 +54,6 @@ echo "1. reboot"
 echo "2. ssh homelab@<dhcp-ip>"
 echo "3. sudo -i"
 echo "4. cd /opt/homelab-bootstrap/nix"
-echo "5. nixos-rebuild boot --flake .#$HOSTNAME"
+echo "5. nixos-rebuild boot --flake .#<hostname>"
 echo "6. reboot"
 echo "7. ssh homelab@<static-ip> (check host config for IP)"

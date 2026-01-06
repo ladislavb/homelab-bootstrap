@@ -104,6 +104,7 @@
         echo "Generating new postgres password..."
         ${pkgs.openssl}/bin/openssl rand -base64 32 > "$PASSWORD_FILE"
         chmod 600 "$PASSWORD_FILE"
+        chown 9999:9999 "$PASSWORD_FILE"
         echo "Postgres password generated and saved to $PASSWORD_FILE"
       else
         echo "Postgres password already exists, skipping generation"
@@ -117,6 +118,7 @@
   virtualisation.oci-containers.containers.semaphoreui-db = {
     image = "postgres:17";
     autoStart = true;
+    user = "9999:9999";
 
     environment = {
       POSTGRES_DB = "semaphoreui";
@@ -140,6 +142,7 @@
   virtualisation.oci-containers.containers.semaphoreui = {
     image = "semaphoreui/semaphore:v2.16.47-powershell7.5.0";
     autoStart = true;
+    user = "9999:9999";
 
     # Only local, so it's hidden behind NPM.
     ports = [

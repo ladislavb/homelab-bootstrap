@@ -23,9 +23,10 @@ reboot
 
 # 2. After reboot, apply host config
 ssh homelab@<dhcp-ip>
+sudo -i
 cd /opt/homelab-bootstrap/nix
-sudo nixos-rebuild boot --flake .#<hostname>
-sudo reboot
+nixos-rebuild boot --flake .#<hostname>
+reboot
 
 # 3. Connect to final static IP
 ssh homelab@<static-ip>

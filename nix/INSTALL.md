@@ -79,11 +79,12 @@ After reboot, SSH into the system and apply the flake:
 
 ```bash
 ssh homelab@<dhcp-ip>
+sudo -i
 cd /opt/homelab-bootstrap/nix
 
 # Use 'boot' instead of 'switch' to avoid SSH disconnect during IP change
-sudo nixos-rebuild boot --flake .#semaphoreui
-sudo reboot
+nixos-rebuild boot --flake .#semaphoreui
+reboot
 ```
 
 **Note:** We use `boot` instead of `switch` because the flake changes the IP from DHCP to static (192.168.0.99). Using `switch` would disconnect your SSH session immediately.
@@ -93,53 +94,5 @@ sudo reboot
 After the reboot, connect to the new static IP:
 
 ```bash
-ssh homelab@192.168.0.99
-```
-
-The system now has:
-- Static IP: `192.168.0.99`
-- SSH available on port 22 (key-based authentication only)
-- Nginx Proxy Manager (NPM) running on http://192.168.0.99:81
-- SemaphoreUI running on http://192.168.0.99 (behind NPM)
-
-### Troubleshooting
-
-1. Log into SemaphoreUI (through NPM on port 81 or directly localhost:3000)
-   - Username: `admin`
-   - Password: `changeme`
-   - **Change immediately after first login!**
-
-## Architecture
-
-```
-minimal ISO
-    ↓
-git clone repo
-    ↓
-./minimal_install.sh
-    ↓
-┌─────────────────────┐
-│ 1. Partition & Format│ → /dev/sda (GPT)
-│                     │   - /boot (512M, EFI/FAT32)
-│                     │   - / (remaining, ext4)
-└─────────────────────┘
-    ↓
-┌─────────────────────┐
-│ 2. Minimal NixOS    │ → Base system
-│                     │   + SSH
-│                     │   + Admin user
-│                     │   + Basic tools
-└─────────────────────┘
-    ↓
-   Reboot
-    ↓
-┌─────────────────────┐
-│ 3. Apply Flake      │ → nixos-rebuild --flake
-│                     │   + hostname
-│                     │   + Static IP
-│                     │   + Docker
-│                     │   + Containers
-└─────────────────────┘
-    ↓
-   Ready!
+ssh homelab@<static-ip>
 ```

@@ -2,32 +2,9 @@
 
 {
   networking.hostName = "semaphoreui";
-  time.timeZone = "Europe/Prague";
 
-  # Bootloader for UEFI
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-
-  # Proxmox VM quality-of-life
-  services.qemuGuest.enable = true;
-
-  # SSH
-  services.openssh.enable = true;
-  services.openssh.settings = {
-    PasswordAuthentication = false;
-    KbdInteractiveAuthentication = false;
-    PermitRootLogin = "no";
-  };
-
-  # Admin user
-  users.users.admin = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" "docker" ];
-    openssh.authorizedKeys.keys = [
-      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDOTm0wfJpY+JLZ7qIBGYjQxx5YqLL0VkBiXg8ZZxQ6yqD7YBfVNJXT1zxOvf6unUTB0Ur+R2RFXDP8/hJdyDhHpoyv2IcvBYOsk91xjU7HzKsqLgS+9Tf+QUIUCHK/7orXMjP8VUCw6DRZr50TTD2om9GwdKyJOXFiSypClPp6T25Qld036dNVyyYvYKVLdbP5ADgtLRigv4xK6MXHhf6fFQqvdNaB6eBvcupL3ijXZ5LiWliwcRaqUy6RRSulTSRFrN9EfxCEdcy4D4RNJuxlPzX96fV3ZmeLBx7K6EPRLFSXyrKuom9omO9Dcd7Mt5Y4QIpXc6iW7RccAXGE4s8UiGceyqItjRRaMlLi+yQn+VNeApnwvXGQLTDrsh45Nfc/TNlvP37xH3cSmNH8GwYJ+W6eapCzeA7tsAZo1F9wRYzgqk2GpFaUb/y2bREWf0WLPsw8REmCpEZ0+KkVcT7UD34uD5imXlVkHvvxYMpxuBDbaOPcVLqDEbaH7G3TySM="
-    ];
-  };
-  security.sudo.wheelNeedsPassword = false;
+  # Extend admin user with docker group (defined in minimal config)
+  users.users.admin.extraGroups = [ "wheel" "docker" ];
 
   # Static IP
   networking.useDHCP = false;

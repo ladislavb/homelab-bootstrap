@@ -1,5 +1,12 @@
 # Automated Installation Guide
 
+## Installation Workflow
+
+This is a two-step installation process:
+
+1. **Minimal Install** - Basic NixOS system with SSH access
+2. **Host Configuration** - Apply specific host configuration via flake
+
 ## Prerequisites
 
 1. Boot from NixOS minimal ISO
@@ -11,7 +18,7 @@
 **Use UEFI boot (this configuration is designed for it):**
 - **BIOS: OVMF (UEFI)** ✓
 - **Machine: q35** (recommended for UEFI)
-- **Disk: SCSI** or VirtIO (must be /dev/sda or adjust disco.nix)
+- **Disk: SCSI** or VirtIO (must be /dev/sda or edit minimal_install.sh)
 - **EFI Disk: Added** (Hardware → Add → EFI Disk)
 - **CD/DVD: NixOS ISO attached**
 - Memory: 4GB minimum
@@ -38,30 +45,47 @@ ping -c 3 github.com
 ```bash
 sudo -i
 git clone https://github.com/ladislavb/homelab-bootstrap.git
+cd homelab-bootstrap/nix
 ```
 
-### 4. Run automated installation
+### 4. Run minimal installation
 
 ```bash
-cd homelab-bootstrap/nix
-./install.sh
+./minimal_install.sh
 ```
 
-The script will:
-1. Partition the disk with disko
-2. Install NixOS with your configuration
-3. Setup bootloader
-4. Configure everything automatically
+This will:
+1. Partition the disk (UEFI/GPT)
+2. Format filesystems (EFI + ext4)
+3. Mount filesystems
+4. Generate hardware config
+5. Install minimal NixOS
+6. Copy repository to /opt/homelab-bootstrap
+7. Install base system
 
-### 5. Reboot
+### 5. Reboot into installed system
 
 ```bash
 reboot
 ```
 
+Remove the ISO from the VM before reboot.
+
 ## Post-Installation
 
-After reboot, the system will:
+### 6. Apply host-specific configuration
+
+After reboot, SSH into the system and apply the flake:
+
+```bash
+ssh admin@<ip-address>
+
+# Repository is already at /opt/homelab-bootstrap
+cd /opt/homelab-bootstrap/nix
+sudo nixos-rebuild switch --flake .#semaphoreui
+```
+
+After applying the flake, the system will have:
 - Have static IP: `192.168.0.99`
 - SSH available on port 22 (key-based authentication only)
 - Nginx Proxy Manager (NPM) running on http://192.168.0.99:81
@@ -70,10 +94,10 @@ After reboot, the system will:
 ### Access the system
 
 ```bash
-ssh admin@192.168.0.101
+ssh admin@192.168.0.99
 ```
 
-### Change default passwords
+### Troubleshooting
 
 1. Log into SemaphoreUI (through NPM on port 81 or directly localhost:3000)
    - Username: `admin`
@@ -87,26 +111,30 @@ minimal ISO
     ↓
 git clone repo
     ↓
-./install.sh
+./minimal_install.sh
     ↓
 ┌─────────────────────┐
-│ 1. Disko            │ → Partition /dev/sda (GPT)
+│ 1. Partition & Format│ → /dev/sda (GPT)
 │                     │   - /boot (512M, EFI/FAT32)
 │                     │   - / (remaining, ext4)
 └─────────────────────┘
     ↓
 ┌─────────────────────┐
-│ 2. NixOS Install    │ → Install base system
-│                     │   + Static IP
-│                     │   + SSH config
-│                     │   + Docker
+│ 2. Minimal NixOS    │ → Base system
+│                     │   + SSH
+│                     │   + Admin user
+│                     │   + Basic tools
 └─────────────────────┘
+    ↓
+   Reboot
     ↓
 ┌─────────────────────┐
-│ 3. Docker Containers│ → PostgreSQL
-│                     │   SemaphoreUI
-│                     │   Nginx Proxy Manager
+│ 3. Apply Flake      │ → nixos-rebuild --flake
+│                     │   + hostname
+│                     │   + Static IP
+│                     │   + Docker
+│                     │   + Containers
 └─────────────────────┘
     ↓
-   Reboot → Ready!
+   Ready!
 ```

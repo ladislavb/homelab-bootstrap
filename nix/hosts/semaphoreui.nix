@@ -4,6 +4,10 @@
   networking.hostName = "semaphoreui";
   time.timeZone = "Europe/Prague";
 
+  # Bootloader
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+
   # Proxmox VM quality-of-life
   services.qemuGuest.enable = true;
 
@@ -32,7 +36,7 @@
   systemd.network.networks."management" = {
     matchConfig.Name = "en*";
     networkConfig = {
-      Address = "192.168.0.101/24";
+      Address = "192.168.0.99/24";
       Gateway = "192.168.0.1";
       DNS = "192.168.0.1";
     };
@@ -156,7 +160,7 @@
   };
 
   # Nginx Proxy Manager
-  # Default is HTTP :80. TLS/443 jen "připraveno".
+  # Default is HTTP :80. TLS/443 ready for manual config.
   virtualisation.oci-containers.containers.npm = {
     image = "jc21/nginx-proxy-manager:v2.13.5";
     autoStart = true;

@@ -9,8 +9,7 @@
 ## 0) Předpoklady (co musíš mít po ruce)
 
 * přístup do Proxmoxu (root/SSH nebo UI)
-* přístup do GitHub repo (token / SSH key)
-* admin SSH key (abys se dostal na VM)
+* admin SSH key (abys se dostal po nixos-rebuild na VM)
 
 ## 1) Nainstaluj nový Proxmox host
 

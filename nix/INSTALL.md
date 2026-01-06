@@ -81,8 +81,9 @@ After reboot, SSH into the system and apply the flake:
 ssh admin@<ip-address>
 
 # Repository is already at /opt/homelab-bootstrap
+sudo -i
 cd /opt/homelab-bootstrap/nix
-sudo nixos-rebuild switch --flake .#semaphoreui
+nixos-rebuild switch --flake .#semaphoreui
 ```
 
 After applying the flake, the system will have:

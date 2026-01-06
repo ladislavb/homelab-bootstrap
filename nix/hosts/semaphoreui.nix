@@ -1,9 +1,14 @@
 { config, pkgs, lib, ... }:
 
 {
+  imports = [
+    /etc/nixos/hardware-configuration.nix
+    ../minimal/configuration.nix
+  ];
+
   networking.hostName = "semaphoreui";
 
-  # Extend admin user with docker group (defined in minimal config)
+  # Extend admin user with docker group
   users.users.admin.extraGroups = [ "wheel" "docker" ];
 
   # Static IP

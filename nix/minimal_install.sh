@@ -37,7 +37,7 @@ cp "./minimal/configuration.nix" "$MOUNT/etc/nixos/configuration.nix"
 
 echo "=== [6/7] Copying repo to installed system ==="
 mkdir -p "$MOUNT/opt"
-cp -r "$(pwd)/../.." "$MOUNT/opt/homelab-bootstrap"
+cp -r "$(pwd)/../.." "$MOUNT/opt/"
 echo "Repository copied to /opt/homelab-bootstrap"
 
 echo "=== [7/7] Installing NixOS ==="

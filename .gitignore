@@ -1,2 +1,5 @@
 .DS_Store
 .vscode
+
+# Generated hardware configuration (specific to each host)
+nix/hosts/hardware-configuration.nix

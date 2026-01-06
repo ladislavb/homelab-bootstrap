@@ -40,6 +40,10 @@ mkdir -p "$MOUNT/opt"
 cp -r "$(pwd)/../.." "$MOUNT/opt/"
 echo "Repository copied to /opt/homelab-bootstrap"
 
+echo "=== [6b/7] Copying hardware config to repo ==="
+cp "$MOUNT/etc/nixos/hardware-configuration.nix" "$MOUNT/opt/homelab-bootstrap/nix/hosts/hardware-configuration.nix"
+echo "Hardware config available for flake at: /opt/homelab-bootstrap/nix/hosts/hardware-configuration.nix"
+
 echo "=== [7/7] Installing NixOS ==="
 nixos-install --no-root-passwd
 

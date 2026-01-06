@@ -70,8 +70,8 @@
   # Persist dirs (survives rebuilds)
   systemd.tmpfiles.rules = [
     "d /opt/docker4u 0750 homelab docker -"
-    "d /opt/docker4u/npm-data 0750 homelab docker -"
-    "d /opt/docker4u/npm-letsencrypt 0750 homelab docker -"
+    "d /opt/docker4u/npm-data 0750 1000 1000 -"
+    "d /opt/docker4u/npm-letsencrypt 0750 1000 1000 -"
     "d /opt/docker4u/semaphoreui 0750 1001 1001 -"
     "d /opt/docker4u/postgres 0700 999 999 -"
     "d /opt/docker4u/secrets 0750 root 999 -"
@@ -190,6 +190,7 @@
   virtualisation.oci-containers.containers.npm = {
     image = "jc21/nginx-proxy-manager:2.13.5";
     autoStart = true;
+    user = "1000:1000";
 
     ports = [
       "80:80"

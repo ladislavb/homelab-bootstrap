@@ -175,7 +175,7 @@
   # Nginx Proxy Manager
   # Default is HTTP :80. TLS/443 ready for manual config.
   virtualisation.oci-containers.containers.npm = {
-    image = "jc21/nginx-proxy-manager:v2.13.5";
+    image = "jc21/nginx-proxy-manager:2.13.5";
     autoStart = true;
 
     ports = [

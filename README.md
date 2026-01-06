@@ -18,7 +18,7 @@ All configuration is declarative, version-controlled, and reproducible.
 sudo -i
 git clone https://github.com/ladislavb/homelab-bootstrap.git
 cd homelab-bootstrap/nix
-./minimal_install.sh <hostname>
+./minimal_install.sh
 reboot
 
 # 2. After reboot, apply host config
@@ -36,29 +36,37 @@ ssh homelab@<static-ip>
 
 ```
 nix/
-├── flake.nix              # Flake definition
+├── flake.nix                         # Flake definition
+├── INSTALL.md                        # Installation walkthrough
+├── minimal_install.sh                # Bootstrap installer (partitions + base copy)
 ├── minimal/
-│   └── configuration.nix  # Universal base config
-├── hosts/
-│   └── <hostname>.nix     # Host-specific configs
-└── minimal_install.sh     # Bootstrap installer
+│   └── configuration.nix             # Universal base config
+└── hosts/
+    ├── common/
+    │   └── hardware-configuration-proxmox.nix  # Shared HW profile for Proxmox VMs
+    └── semaphoreui/
+        ├── configuration.nix         # Host-specific config
+        └── README.md                 # Host notes
 ```
 
 ## Available Hosts
 
-- **[semaphoreui](nix/hosts/)** - SemaphoreUI + Nginx Proxy Manager + PostgreSQL
+- **[semaphoreui](nix/hosts/semaphoreui/)** - SemaphoreUI + Nginx Proxy Manager + PostgreSQL
 
 ## Adding New Hosts
 
-1. Create `nix/hosts/newhost.nix`
-2. Add to `nix/flake.nix`:
+1. Create `nix/hosts/<hostname>/configuration.nix` (and optional `README.md`).
+2. Register it in `nix/flake.nix`:
    ```nix
    nixosConfigurations.newhost = nixpkgs.lib.nixosSystem {
      inherit system;
-     modules = [ ./hosts/newhost.nix ];
+     modules = [
+       ./hosts/common/hardware-configuration-proxmox.nix
+       ./hosts/newhost/configuration.nix
+     ];
    };
    ```
-3. Deploy: `nixos-rebuild switch --flake .#newhost`
+3. Deploy: `nixos-rebuild switch --flake .#<newhost>`
 
 ## Requirements
 

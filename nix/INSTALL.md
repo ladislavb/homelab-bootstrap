@@ -51,12 +51,7 @@ cd homelab-bootstrap/nix
 ### 4. Run minimal installation
 
 ```bash
-./minimal_install.sh <hostname>
-```
-
-For example, to install the semaphoreui host:
-```bash
-./minimal_install.sh semaphoreui
+./minimal_install.sh
 ```
 
 This will:
@@ -73,8 +68,6 @@ This will:
 ```bash
 reboot
 ```
-
-Remove the ISO from the VM before reboot.
 
 ## Post-Installation
 

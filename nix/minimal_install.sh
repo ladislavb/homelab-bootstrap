@@ -20,8 +20,8 @@ parted -s "$DISK" set 1 esp on
 parted -s "$DISK" mkpart primary ext4 513MiB 100%
 
 echo "=== [2/7] Formatting partitions ==="
-mkfs.fat -F32 "${DISK}1"
-mkfs.ext4 -F "${DISK}2"
+mkfs.fat -F32 -n boot "${DISK}1"
+mkfs.ext4 -F -L nixos "${DISK}2"
 
 echo "=== [3/7] Mounting filesystems ==="
 mount "${DISK}2" "$MOUNT"

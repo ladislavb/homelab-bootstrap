@@ -62,17 +62,6 @@ mkdir -p "$MOUNT/opt"
 cp -r "$(pwd)/../.." "$MOUNT/opt/"
 echo "Repository copied to /opt/homelab-bootstrap"
 
-echo "=== [6b/7] Copying hardware config to repo ==="
-cp "$MOUNT/etc/nixos/hardware-configuration.nix" "$MOUNT/opt/homelab-bootstrap/nix/hosts/$HOSTNAME/hardware-configuration.nix"
-echo "Hardware config available for flake at: /opt/homelab-bootstrap/nix/hosts/$HOSTNAME/hardware-configuration.nix"
-
-echo "=== [6c/7] Committing hardware config to git ==="
-cd "$MOUNT/opt/homelab-bootstrap"
-git add "nix/hosts/$HOSTNAME/hardware-configuration.nix"
-git commit -m "Add hardware config for $HOSTNAME" || echo "Warning: git commit failed (might be already committed or git not configured)"
-cd - > /dev/null
-echo "Hardware config committed to local git"
-
 echo "=== [7/7] Installing NixOS ==="
 nixos-install --no-root-passwd
 

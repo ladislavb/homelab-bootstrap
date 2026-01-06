@@ -92,9 +92,7 @@ nixos-rebuild boot --flake .#semaphoreui
 reboot
 ```
 
-**Note:** 
-- We use `boot` instead of `switch` because the flake changes the IP from DHCP to static (192.168.0.99). Using `switch` would disconnect your SSH session.
-- The hardware-configuration.nix was automatically committed to git during installation.
+**Note:** We use `boot` instead of `switch` because the flake changes the IP from DHCP to static (192.168.0.99). Using `switch` would disconnect your SSH session.
 
 ### 7. Connect to final system
 

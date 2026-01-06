@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ./hardware-configuration.nix
+    ../common/hardware-configuration-proxmox.nix
   ];
 
   # Base system configuration

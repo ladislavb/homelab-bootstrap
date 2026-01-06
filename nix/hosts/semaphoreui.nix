@@ -5,8 +5,11 @@
   time.timeZone = "Europe/Prague";
 
   # Bootloader for legacy BIOS
-  boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/sda";
+  boot.loader.grub = {
+    enable = true;
+    device = "/dev/sda";
+    efiSupport = false;
+  };
 
   # Proxmox VM quality-of-life
   services.qemuGuest.enable = true;

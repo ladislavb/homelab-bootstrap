@@ -24,7 +24,7 @@
 
 Boot your VM from the NixOS minimal ISO.
 
-### 2. Setup network (if needed)
+### 2. Test network
 
 If using DHCP (automatic):
 ```bash
@@ -32,33 +32,18 @@ If using DHCP (automatic):
 ping -c 3 github.com
 ```
 
-If using static IP (manual):
-```bash
-ip addr add 192.168.0.100/24 dev ens18
-ip route add default via 192.168.0.1
-echo "nameserver 192.168.0.1" > /etc/resolv.conf
-```
-
 ### 3. Clone the repository
 
 ```bash
-nix-shell -p git
+sudo -i
 git clone https://github.com/ladislavb/homelab-bootstrap.git
+```
+
+### 4. Run automated installation
+
+```bash
 cd homelab-bootstrap/nix
-```
-
-### 4. (Optional) Customize disk device
-
-If your disk is not `/dev/sda`, edit `disco.nix`:
-```bash
-nano disco.nix
-# Change: device = "/dev/sda"; to your disk (e.g., /dev/vda, /dev/nvme0n1)
-```
-
-### 5. Run automated installation
-
-```bash
-sudo bash install.sh
+./install.sh
 ```
 
 The script will:
@@ -67,7 +52,7 @@ The script will:
 3. Setup bootloader
 4. Configure everything automatically
 
-### 6. Reboot
+### 5. Reboot
 
 ```bash
 reboot
@@ -76,10 +61,10 @@ reboot
 ## Post-Installation
 
 After reboot, the system will:
-- Have static IP: `192.168.0.101`
+- Have static IP: `192.168.0.99`
 - SSH available on port 22 (key-based authentication only)
-- SemaphoreUI running on http://localhost:3000 (behind NPM)
-- Nginx Proxy Manager on ports 80, 443, 81
+- Nginx Proxy Manager (NPM) running on http://192.168.0.99:81
+- SemaphoreUI running on http://192.168.0.99 (behind NPM)
 
 ### Access the system
 
@@ -93,44 +78,6 @@ ssh admin@192.168.0.101
    - Username: `admin`
    - Password: `changeme`
    - **Change immediately after first login!**
-
-## Troubleshooting
-
-### ISO won't boot with OVMF (UEFI)
-
-**Solution:** Use SeaBIOS instead. The current configuration is designed for legacy BIOS.
-
-In Proxmox:
-1. Shut down VM
-2. Hardware → BIOS → Change to **SeaBIOS**
-3. Remove EFI Disk if added
-4. Ensure CD/DVD drive is attached with ISO
-5. Boot order: CD/DVD first, then disk
-6. Start VM and boot from ISO
-
-### VM not booting after installation
-
-### Check disk device name
-```bash
-lsblk
-```
-
-### Manual disko partitioning
-```bash
-nix --experimental-features "nix-command flakes" run github:nix-community/disko -- \
-  --mode disko \
-  --flake .#semaphoreui
-```
-
-### Manual NixOS install
-```bash
-nixos-install --flake .#semaphoreui --no-root-password
-```
-
-### View installation logs
-```bash
-journalctl -xe
-```
 
 ## Architecture
 
@@ -149,9 +96,9 @@ git clone repo
     ↓
 ┌─────────────────────┐
 │ 2. NixOS Install    │ → Install base system
-│                     │   + Docker
-│                     │   + SSH config
 │                     │   + Static IP
+│                     │   + SSH config
+│                     │   + Docker
 └─────────────────────┘
     ↓
 ┌─────────────────────┐

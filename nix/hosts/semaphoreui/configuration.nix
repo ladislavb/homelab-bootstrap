@@ -32,20 +32,6 @@
   };
 
   # System users to match container UIDs/GIDs, so tmpfiles and chown succeed.
-  users.groups.postgres-container.gid = 999;
-  users.users.postgres-container = {
-    isSystemUser = true;
-    uid = 999;
-    group = "postgres-container";
-    description = "Postgres container user (matches image UID/GID)";
-  };
-  users.groups.semaphore-container.gid = 1001;
-  users.users.semaphore-container = {
-    isSystemUser = true;
-    uid = 1001;
-    group = "semaphore-container";
-    description = "Semaphore container user (matches image UID/GID)";
-  };
 
   security.sudo.wheelNeedsPassword = false;
 
@@ -88,11 +74,13 @@
     # Ensure a clean secret path before recreation
     "r /opt/docker4u/secrets/postgres_password - - - -"
     "d /opt/docker4u 0750 homelab docker -"
-    "d /opt/docker4u/npm-data 0750 1000 1000 -"
+    "d /opt/docker4u/npm-data 0755 1000 1000 -"
+    "d /opt/docker4u/npm-data/logs 0755 1000 1000 -"
+    "f /opt/docker4u/npm-data/logs/fallback_error.log 0644 1000 1000 -"
     "d /opt/docker4u/npm-letsencrypt 0750 1000 1000 -"
-    "d /opt/docker4u/semaphoreui 0750 semaphore-container semaphore-container -"
-    "d /opt/docker4u/postgres 0700 postgres-container postgres-container -"
-    "d /opt/docker4u/secrets 0750 root postgres-container -"
+    "d /opt/docker4u/semaphoreui 0750 1001 1001 -"
+    "d /opt/docker4u/postgres 0700 999 999 -"
+    "d /opt/docker4u/secrets 0750 root 999 -"
   ];
 
   # Docker network for internal comms
@@ -120,7 +108,7 @@
     script = ''
       PASSWORD_FILE="/opt/docker4u/secrets/postgres_password"
       mkdir -p /opt/docker4u/secrets
-      chown root:postgres-container /opt/docker4u/secrets
+      chown root:999 /opt/docker4u/secrets
       chmod 750 /opt/docker4u/secrets
       if [ -d "$PASSWORD_FILE" ]; then
         echo "Found directory at $PASSWORD_FILE; removing so the secret file can be created."
@@ -130,7 +118,7 @@
         echo "Generating new postgres password..."
         ${pkgs.openssl}/bin/openssl rand -base64 32 > "$PASSWORD_FILE"
         chmod 640 "$PASSWORD_FILE"
-        chown postgres-container:postgres-container "$PASSWORD_FILE"
+        chown 999:999 "$PASSWORD_FILE"
         echo "Postgres password generated and saved to $PASSWORD_FILE"
       else
         echo "Postgres password already exists, skipping generation"

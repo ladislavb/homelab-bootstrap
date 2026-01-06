@@ -94,12 +94,16 @@
     description = "Generate postgres password if it doesn't exist";
     wantedBy = [ "multi-user.target" ];
     before = [ "docker-semaphoreui-db.service" "docker-semaphoreui.service" ];
+    after = [ "systemd-tmpfiles-setup.service" ];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
     };
     script = ''
       PASSWORD_FILE="/opt/docker4u/secrets/postgres_password"
+      mkdir -p /opt/docker4u/secrets
+      chown root:root /opt/docker4u/secrets
+      chmod 700 /opt/docker4u/secrets
       if [ -d "$PASSWORD_FILE" ]; then
         echo "Found directory at $PASSWORD_FILE; removing so the secret file can be created."
         rm -rf "$PASSWORD_FILE"

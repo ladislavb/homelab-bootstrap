@@ -101,8 +101,8 @@
     script = ''
       PASSWORD_FILE="/opt/docker4u/secrets/postgres_password"
       if [ -d "$PASSWORD_FILE" ]; then
-        echo "ERROR: $PASSWORD_FILE is a directory. Remove or rename it so the secret file can be created."
-        exit 1
+        echo "Found directory at $PASSWORD_FILE; removing so the secret file can be created."
+        rm -rf "$PASSWORD_FILE"
       fi
       if [ ! -f "$PASSWORD_FILE" ]; then
         echo "Generating new postgres password..."
@@ -205,7 +205,9 @@
 
   # Ensure network and secrets exist before containers start
   systemd.services."docker-semaphoreui-db".after = [ "docker-create-docker4u-net.service" "generate-postgres-password.service" ];
+  systemd.services."docker-semaphoreui-db".requires = [ "generate-postgres-password.service" ];
   systemd.services."docker-semaphoreui".after = [ "docker-create-docker4u-net.service" "generate-postgres-password.service" ];
+  systemd.services."docker-semaphoreui".requires = [ "generate-postgres-password.service" ];
   systemd.services."docker-npm".after = [ "docker-create-docker4u-net.service" ];
 
 }

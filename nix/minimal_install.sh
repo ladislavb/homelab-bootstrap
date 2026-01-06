@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Minimal NixOS installation script for UEFI systems.
+
 set -euo pipefail
 
 DISK="/dev/sda"

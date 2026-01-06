@@ -81,10 +81,6 @@
   networking.firewall.enable = true;
   networking.firewall.allowedTCPPorts = [ 22 80 81 443 ]; # Optional: limit NPM admin UI exposure (port 81) later via firewall rules.
 
-  # Nix basics
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  system.stateVersion = "24.11";
-
   # Docker
   virtualisation.docker.enable = true;
   virtualisation.docker.autoPrune.enable = true;

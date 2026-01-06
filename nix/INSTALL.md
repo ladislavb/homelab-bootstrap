@@ -8,15 +8,16 @@
 
 ### Proxmox VM Settings (Recommended)
 
-**Use legacy BIOS (this configuration is designed for it):**
-- **BIOS: SeaBIOS (default)** ✓
-- **Machine: i440fx** or q35
+**Use UEFI boot (this configuration is designed for it):**
+- **BIOS: OVMF (UEFI)** ✓
+- **Machine: q35** (recommended for UEFI)
 - **Disk: SCSI** or VirtIO (must be /dev/sda or adjust disco.nix)
+- **EFI Disk: Added** (Hardware → Add → EFI Disk)
 - **CD/DVD: NixOS ISO attached**
 - Memory: 4GB minimum
 - CPU: 2 cores minimum
 
-> **Note:** This configuration uses GRUB on legacy BIOS. UEFI/OVMF is NOT needed and can cause boot issues with ISO in Proxmox.
+> **Note:** This configuration uses systemd-boot with UEFI. Legacy BIOS (SeaBIOS) is NOT supported.
 
 ## Installation Steps
 
@@ -90,7 +91,7 @@ git clone repo
     ↓
 ┌─────────────────────┐
 │ 1. Disko            │ → Partition /dev/sda (GPT)
-│                     │   - BIOS boot (1M, EF02)
+│                     │   - /boot (512M, EFI/FAT32)
 │                     │   - / (remaining, ext4)
 └─────────────────────┘
     ↓

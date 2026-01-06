@@ -9,6 +9,7 @@
     enable = true;
     device = "/dev/sda";
     efiSupport = false;
+    mirroredBoots = [ ];
   };
 
   # Proxmox VM quality-of-life

@@ -75,7 +75,6 @@
     "d /opt/docker4u/semaphoreui 0750 1001 1001 -"
     "d /opt/docker4u/postgres 0700 999 999 -"
     "d /opt/docker4u/secrets 0750 root 999 -"
-    "f /opt/docker4u/secrets/postgres_password 0640 999 999 -"
   ];
 
   # Docker network for internal comms
@@ -138,7 +137,7 @@
 
     volumes = [
       "/opt/docker4u/postgres:/var/lib/postgresql/data"
-      "/opt/docker4u/secrets/postgres_password:/run/secrets/postgres_password:ro"
+      "/opt/docker4u/secrets:/run/secrets:ro"
     ];
 
     extraOptions = [
@@ -176,7 +175,7 @@
 
     volumes = [
       "/opt/docker4u/semaphoreui:/var/lib/semaphore"
-      "/opt/docker4u/secrets/postgres_password:/run/secrets/postgres_password:ro"
+      "/opt/docker4u/secrets:/run/secrets:ro"
     ];
 
     dependsOn = [ "semaphoreui-db" ];

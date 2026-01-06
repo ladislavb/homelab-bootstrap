@@ -100,6 +100,10 @@
     };
     script = ''
       PASSWORD_FILE="/opt/docker4u/secrets/postgres_password"
+      if [ -d "$PASSWORD_FILE" ]; then
+        echo "ERROR: $PASSWORD_FILE is a directory. Remove or rename it so the secret file can be created."
+        exit 1
+      fi
       if [ ! -f "$PASSWORD_FILE" ]; then
         echo "Generating new postgres password..."
         ${pkgs.openssl}/bin/openssl rand -base64 32 > "$PASSWORD_FILE"
@@ -118,7 +122,7 @@
   virtualisation.oci-containers.containers.semaphoreui-db = {
     image = "postgres:17";
     autoStart = true;
-    user = "9999:9999";
+    user = "9999";
 
     environment = {
       POSTGRES_DB = "semaphoreui";
@@ -142,7 +146,7 @@
   virtualisation.oci-containers.containers.semaphoreui = {
     image = "semaphoreui/semaphore:v2.16.47-powershell7.5.0";
     autoStart = true;
-    user = "9999:9999";
+    user = "9999";
 
     # Only local, so it's hidden behind NPM.
     ports = [

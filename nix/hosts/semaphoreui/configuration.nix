@@ -102,7 +102,7 @@
     script = ''
       PASSWORD_FILE="/opt/docker4u/secrets/postgres_password"
       mkdir -p /opt/docker4u/secrets
-      chown homelab:homelab /opt/docker4u/secrets
+      chown 1000:1000 /opt/docker4u/secrets
       chmod 700 /opt/docker4u/secrets
       if [ -d "$PASSWORD_FILE" ]; then
         echo "Found directory at $PASSWORD_FILE; removing so the secret file can be created."
@@ -112,7 +112,7 @@
         echo "Generating new postgres password..."
         ${pkgs.openssl}/bin/openssl rand -base64 32 > "$PASSWORD_FILE"
         chmod 600 "$PASSWORD_FILE"
-        chown homelab:homelab "$PASSWORD_FILE"
+        chown 1000:1000 "$PASSWORD_FILE"
         echo "Postgres password generated and saved to $PASSWORD_FILE"
       else
         echo "Postgres password already exists, skipping generation"

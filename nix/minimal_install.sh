@@ -3,8 +3,30 @@
 
 set -euo pipefail
 
+# Check if hostname is provided
+if [ $# -ne 1 ]; then
+  echo "Usage: $0 <hostname>"
+  echo "Example: $0 semaphoreui"
+  exit 1
+fi
+
+HOSTNAME="$1"
 DISK="/dev/sda"
 MOUNT="/mnt"
+
+# Validate that host configuration exists
+if [ ! -d "hosts/$HOSTNAME" ]; then
+  echo "ERROR: Host configuration 'hosts/$HOSTNAME' does not exist!"
+  echo ""
+  echo "Available hosts:"
+  ls -1 hosts/ | grep -v "^README" || echo "  (none found)"
+  echo ""
+  echo "Usage: $0 <hostname>"
+  echo "Example: $0 semaphoreui"
+  exit 1
+fi
+
+echo "=== Installing host: $HOSTNAME ==="
 
 echo "=== Preflight: unmounting /mnt and disabling swap (if any) ==="
 umount -R /mnt 2>/dev/null || true
@@ -41,8 +63,15 @@ cp -r "$(pwd)/../.." "$MOUNT/opt/"
 echo "Repository copied to /opt/homelab-bootstrap"
 
 echo "=== [6b/7] Copying hardware config to repo ==="
-cp "$MOUNT/etc/nixos/hardware-configuration.nix" "$MOUNT/opt/homelab-bootstrap/nix/hosts/hardware-configuration.nix"
-echo "Hardware config available for flake at: /opt/homelab-bootstrap/nix/hosts/hardware-configuration.nix"
+cp "$MOUNT/etc/nixos/hardware-configuration.nix" "$MOUNT/opt/homelab-bootstrap/nix/hosts/$HOSTNAME/hardware-configuration.nix"
+echo "Hardware config available for flake at: /opt/homelab-bootstrap/nix/hosts/$HOSTNAME/hardware-configuration.nix"
+
+echo "=== [6c/7] Committing hardware config to git ==="
+cd "$MOUNT/opt/homelab-bootstrap"
+git add "nix/hosts/$HOSTNAME/hardware-configuration.nix"
+git commit -m "Add hardware config for $HOSTNAME" || echo "Warning: git commit failed (might be already committed or git not configured)"
+cd - > /dev/null
+echo "Hardware config committed to local git"
 
 echo "=== [7/7] Installing NixOS ==="
 nixos-install --no-root-passwd
@@ -56,6 +85,6 @@ echo "1. reboot"
 echo "2. ssh homelab@<dhcp-ip>"
 echo "3. sudo -i"
 echo "4. cd /opt/homelab-bootstrap/nix"
-echo "5. nixos-rebuild boot --flake .#semaphoreui"
+echo "5. nixos-rebuild boot --flake .#$HOSTNAME"
 echo "6. reboot"
-echo "7. ssh homelab@<static-ip>"
+echo "7. ssh homelab@<static-ip> (check host config for IP)"

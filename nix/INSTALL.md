@@ -51,7 +51,12 @@ cd homelab-bootstrap/nix
 ### 4. Run minimal installation
 
 ```bash
-./minimal_install.sh
+./minimal_install.sh <hostname>
+```
+
+For example, to install the semaphoreui host:
+```bash
+./minimal_install.sh semaphoreui
 ```
 
 This will:
@@ -87,7 +92,9 @@ nixos-rebuild boot --flake .#semaphoreui
 reboot
 ```
 
-**Note:** We use `boot` instead of `switch` because the flake changes the IP from DHCP to static (192.168.0.99). Using `switch` would disconnect your SSH session immediately.
+**Note:** 
+- We use `boot` instead of `switch` because the flake changes the IP from DHCP to static (192.168.0.99). Using `switch` would disconnect your SSH session.
+- The hardware-configuration.nix was automatically committed to git during installation.
 
 ### 7. Connect to final system
 

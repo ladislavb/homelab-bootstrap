@@ -13,7 +13,7 @@
     nixosConfigurations.semaphoreui = nixpkgs.lib.nixosSystem {
       inherit system;
       modules = [
-        ./hosts/semaphoreui.nix
+        ./hosts/semaphoreui/configuration.nix
       ];
     };
   };

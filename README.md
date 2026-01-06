@@ -18,7 +18,7 @@ All configuration is declarative, version-controlled, and reproducible.
 sudo -i
 git clone https://github.com/ladislavb/homelab-bootstrap.git
 cd homelab-bootstrap/nix
-./minimal_install.sh
+./minimal_install.sh <hostname>
 reboot
 
 # 2. After reboot, apply host config

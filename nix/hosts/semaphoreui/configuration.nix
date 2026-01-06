@@ -72,9 +72,9 @@
     "d /opt/docker4u 0750 homelab docker -"
     "d /opt/docker4u/npm-data 0750 homelab docker -"
     "d /opt/docker4u/npm-letsencrypt 0750 homelab docker -"
-    "d /opt/docker4u/semaphoreui 0750 homelab docker -"
-    "d /opt/docker4u/postgres 0750 homelab docker -"
-    "d /opt/docker4u/secrets 0700 homelab homelab -"
+    "d /opt/docker4u/semaphoreui 0750 1001 1001 -"
+    "d /opt/docker4u/postgres 0700 999 999 -"
+    "d /opt/docker4u/secrets 0750 root 999 -"
   ];
 
   # Docker network for internal comms
@@ -102,8 +102,8 @@
     script = ''
       PASSWORD_FILE="/opt/docker4u/secrets/postgres_password"
       mkdir -p /opt/docker4u/secrets
-      chown 1000:1000 /opt/docker4u/secrets
-      chmod 700 /opt/docker4u/secrets
+      chown root:999 /opt/docker4u/secrets
+      chmod 750 /opt/docker4u/secrets
       if [ -d "$PASSWORD_FILE" ]; then
         echo "Found directory at $PASSWORD_FILE; removing so the secret file can be created."
         rm -rf "$PASSWORD_FILE"
@@ -111,8 +111,8 @@
       if [ ! -f "$PASSWORD_FILE" ]; then
         echo "Generating new postgres password..."
         ${pkgs.openssl}/bin/openssl rand -base64 32 > "$PASSWORD_FILE"
-        chmod 600 "$PASSWORD_FILE"
-        chown 1000:1000 "$PASSWORD_FILE"
+        chmod 640 "$PASSWORD_FILE"
+        chown 999:999 "$PASSWORD_FILE"
         echo "Postgres password generated and saved to $PASSWORD_FILE"
       else
         echo "Postgres password already exists, skipping generation"
@@ -126,7 +126,8 @@
   virtualisation.oci-containers.containers.semaphoreui-db = {
     image = "postgres:17";
     autoStart = true;
-    user = "1000";
+    # Run as the image default postgres uid/gid 999 for correct initdb ownership.
+    user = "999:999";
 
     environment = {
       POSTGRES_DB = "semaphoreui";
@@ -150,7 +151,8 @@
   virtualisation.oci-containers.containers.semaphoreui = {
     image = "semaphoreui/semaphore:v2.16.47-powershell7.5.0";
     autoStart = true;
-    user = "1000";
+    # Run as image uid 1001 with group 999 so it can read the shared secret.
+    user = "1001:999";
 
     # Only local, so it's hidden behind NPM.
     ports = [

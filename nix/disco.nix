@@ -7,14 +7,9 @@
         content = {
           type = "gpt";
           partitions = {
-            ESP = {
-              size = "500M";
-              type = "EF00";
-              content = {
-                type = "filesystem";
-                format = "vfat";
-                mountpoint = "/boot";
-              };
+            boot = {
+              size = "1M";
+              type = "EF02"; # BIOS boot partition
             };
             root = {
               size = "100%";

@@ -6,6 +6,18 @@
 2. Network connection (DHCP or manual)
 3. Git installed (usually available on minimal ISO)
 
+### Proxmox VM Settings (Recommended)
+
+**Use legacy BIOS (this configuration is designed for it):**
+- **BIOS: SeaBIOS (default)** ✓
+- **Machine: i440fx** or q35
+- **Disk: SCSI** or VirtIO (must be /dev/sda or adjust disco.nix)
+- **CD/DVD: NixOS ISO attached**
+- Memory: 4GB minimum
+- CPU: 2 cores minimum
+
+> **Note:** This configuration uses GRUB on legacy BIOS. UEFI/OVMF is NOT needed and can cause boot issues with ISO in Proxmox.
+
 ## Installation Steps
 
 ### 1. Boot into NixOS ISO
@@ -84,6 +96,20 @@ ssh admin@192.168.0.101
 
 ## Troubleshooting
 
+### ISO won't boot with OVMF (UEFI)
+
+**Solution:** Use SeaBIOS instead. The current configuration is designed for legacy BIOS.
+
+In Proxmox:
+1. Shut down VM
+2. Hardware → BIOS → Change to **SeaBIOS**
+3. Remove EFI Disk if added
+4. Ensure CD/DVD drive is attached with ISO
+5. Boot order: CD/DVD first, then disk
+6. Start VM and boot from ISO
+
+### VM not booting after installation
+
 ### Check disk device name
 ```bash
 lsblk
@@ -117,7 +143,7 @@ git clone repo
     ↓
 ┌─────────────────────┐
 │ 1. Disko            │ → Partition /dev/sda (GPT)
-│                     │   - /boot (500M, EFI)
+│                     │   - BIOS boot (1M, EF02)
 │                     │   - / (remaining, ext4)
 └─────────────────────┘
     ↓

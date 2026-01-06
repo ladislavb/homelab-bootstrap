@@ -4,9 +4,9 @@
   networking.hostName = "semaphoreui";
   time.timeZone = "Europe/Prague";
 
-  # Bootloader
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  # Bootloader for legacy BIOS
+  boot.loader.grub.enable = true;
+  boot.loader.grub.device = "/dev/sda";
 
   # Proxmox VM quality-of-life
   services.qemuGuest.enable = true;

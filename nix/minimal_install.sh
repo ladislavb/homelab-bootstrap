@@ -22,7 +22,7 @@ mkdir -p "$MOUNT/boot"
 mount "${DISK}1" "$MOUNT/boot"
 
 echo "=== [4/7] Generating hardware config ==="
-nixos-generate-config --no-filesystems --root "$MOUNT"
+nixos-generate-config --root "$MOUNT"
 
 echo "=== [5/7] Installing minimal NixOS config ==="
 mkdir -p "$MOUNT/etc/nixos"

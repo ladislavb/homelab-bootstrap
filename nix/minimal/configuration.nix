@@ -51,5 +51,5 @@
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   # ---------------- REQUIRED ----------------
-  system.stateVersion = "25.11";
+  system.stateVersion = "24.11";
 }

@@ -78,25 +78,29 @@ Remove the ISO from the VM before reboot.
 After reboot, SSH into the system and apply the flake:
 
 ```bash
-ssh homelab@<ip-address>
-
-# Repository is already at /opt/homelab-bootstrap
-sudo -i
+ssh homelab@<dhcp-ip>
 cd /opt/homelab-bootstrap/nix
-nixos-rebuild switch --flake .#semaphoreui
+
+# Use 'boot' instead of 'switch' to avoid SSH disconnect during IP change
+sudo nixos-rebuild boot --flake .#semaphoreui
+sudo reboot
 ```
 
-After applying the flake, the system will have:
-- Have static IP: `192.168.0.99`
-- SSH available on port 22 (key-based authentication only)
-- Nginx Proxy Manager (NPM) running on http://192.168.0.99:81
-- SemaphoreUI running on http://192.168.0.99 (behind NPM)
+**Note:** We use `boot` instead of `switch` because the flake changes the IP from DHCP to static (192.168.0.99). Using `switch` would disconnect your SSH session immediately.
 
-### Access the system
+### 7. Connect to final system
+
+After the reboot, connect to the new static IP:
 
 ```bash
 ssh homelab@192.168.0.99
 ```
+
+The system now has:
+- Static IP: `192.168.0.99`
+- SSH available on port 22 (key-based authentication only)
+- Nginx Proxy Manager (NPM) running on http://192.168.0.99:81
+- SemaphoreUI running on http://192.168.0.99 (behind NPM)
 
 ### Troubleshooting
 

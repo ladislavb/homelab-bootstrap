@@ -25,7 +25,7 @@
   };
 
   # ---------------- USER ----------------
-  users.users.admin = {
+  users.users.homelab = {
     isNormalUser = true;
     extraGroups = [ "wheel" ];
     openssh.authorizedKeys.keys = [

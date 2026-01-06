@@ -26,8 +26,8 @@
 
   networking.hostName = "semaphoreui";
 
-  # Extend admin user with docker group
-  users.users.admin.extraGroups = [ "wheel" "docker" ];
+  # Extend homelab user with docker group
+  users.users.homelab.extraGroups = [ "wheel" "docker" ];
 
   # Static IP
   networking.useDHCP = false;

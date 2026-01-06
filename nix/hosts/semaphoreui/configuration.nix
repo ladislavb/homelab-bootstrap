@@ -74,7 +74,7 @@
     "d /opt/docker4u/npm-letsencrypt 0750 homelab docker -"
     "d /opt/docker4u/semaphoreui 0750 homelab docker -"
     "d /opt/docker4u/postgres 0750 homelab docker -"
-    "d /opt/docker4u/secrets 0700 root root -"
+    "d /opt/docker4u/secrets 0700 homelab homelab -"
   ];
 
   # Docker network for internal comms
@@ -102,7 +102,7 @@
     script = ''
       PASSWORD_FILE="/opt/docker4u/secrets/postgres_password"
       mkdir -p /opt/docker4u/secrets
-      chown root:root /opt/docker4u/secrets
+      chown homelab:homelab /opt/docker4u/secrets
       chmod 700 /opt/docker4u/secrets
       if [ -d "$PASSWORD_FILE" ]; then
         echo "Found directory at $PASSWORD_FILE; removing so the secret file can be created."
@@ -112,7 +112,7 @@
         echo "Generating new postgres password..."
         ${pkgs.openssl}/bin/openssl rand -base64 32 > "$PASSWORD_FILE"
         chmod 600 "$PASSWORD_FILE"
-        chown 9999:9999 "$PASSWORD_FILE"
+        chown homelab:homelab "$PASSWORD_FILE"
         echo "Postgres password generated and saved to $PASSWORD_FILE"
       else
         echo "Postgres password already exists, skipping generation"
@@ -126,7 +126,7 @@
   virtualisation.oci-containers.containers.semaphoreui-db = {
     image = "postgres:17";
     autoStart = true;
-    user = "9999";
+    user = "1000";
 
     environment = {
       POSTGRES_DB = "semaphoreui";
@@ -150,7 +150,7 @@
   virtualisation.oci-containers.containers.semaphoreui = {
     image = "semaphoreui/semaphore:v2.16.47-powershell7.5.0";
     autoStart = true;
-    user = "9999";
+    user = "1000";
 
     # Only local, so it's hidden behind NPM.
     ports = [

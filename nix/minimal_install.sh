@@ -6,6 +6,13 @@ set -euo pipefail
 DISK="/dev/sda"
 MOUNT="/mnt"
 
+echo "=== Preflight: unmounting /mnt and disabling swap (if any) ==="
+umount -R /mnt 2>/dev/null || true
+swapoff -a 2>/dev/null || true
+
+echo "=== Preflight: wiping old signatures ==="
+wipefs -a /dev/sda || true
+
 echo "=== [1/7] Partitioning disk $DISK (UEFI) ==="
 parted -s "$DISK" mklabel gpt
 parted -s "$DISK" mkpart ESP fat32 1MiB 513MiB

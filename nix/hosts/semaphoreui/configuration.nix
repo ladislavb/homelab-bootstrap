@@ -208,7 +208,10 @@
   virtualisation.oci-containers.containers.npm = {
     image = "jc21/nginx-proxy-manager:2.13.5";
     autoStart = true;
-    user = "1000:1000";
+    environment = {
+      PUID = "1000";
+      PGID = "1000";
+    };
 
     ports = [
       "80:80"

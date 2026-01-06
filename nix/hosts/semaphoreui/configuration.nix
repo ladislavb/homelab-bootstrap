@@ -69,6 +69,8 @@
 
   # Persist dirs (survives rebuilds)
   systemd.tmpfiles.rules = [
+    # Ensure a clean secret path before recreation
+    "r /opt/docker4u/secrets/postgres_password - - - -"
     "d /opt/docker4u 0750 homelab docker -"
     "d /opt/docker4u/npm-data 0750 1000 1000 -"
     "d /opt/docker4u/npm-letsencrypt 0750 1000 1000 -"

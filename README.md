@@ -12,8 +12,6 @@
 * přístup do GitHub repo (token / SSH key)
 * admin SSH key (abys se dostal na VM)
 
----
-
 ## 1) Nainstaluj nový Proxmox host
 
 1. Nainstaluj Proxmox (standard).
@@ -22,8 +20,6 @@
    * `vmbr0` (LAN/mgmt)
    * storage (ZFS/LVM-thin)
 3. Ověř přístup: UI + SSH na host.
-
----
 
 ## 2) Vytvoř NixOS VM „semaphoreui“
 
@@ -37,8 +33,6 @@
 3. Bootni z ISO a nainstaluj NixOS (minimal).
 4. Během instalace nastav síť (DHCP stačí).
 5. Nastav uživatele/admin.
-
----
 
 ## 3) Přihlášení na VM a stažení repa
 
@@ -55,8 +49,6 @@ sudo mkdir -p /opt/homelab
 sudo chown admin:admin /opt/homelab
 git clone https://github.com/ladislavb/homelab-bootstrap.git /opt/homelab
 ```
-
----
 
 ## 4) Aplikuj NixOS konfiguraci (Semaphore + NPM)
 
@@ -85,8 +77,6 @@ Měl bys vidět kontejnery typu:
 * `semaphoreui`
 * `semaphoreui-db`
 
----
-
 ## 5) Přístup do Nginx Proxy Manageru
 
 1. Otevři v prohlížeči:
@@ -97,8 +87,6 @@ Měl bys vidět kontejnery typu:
 3. Zkontroluj, že NPM běží i na portu 80:
 
 * `http://<IP_VM>/`
-
----
 
 ## 6) Nastav proxy host pro SemaphoreUI (ručně)
 
@@ -129,8 +117,6 @@ Pak zkus:
 
 > Pozn.: Aby ti `semaphore.<doména>` fungovalo hned, musí DNS ukazovat na IP té VM (interní split DNS nebo dočasně /etc/hosts).
 
----
-
 ## 7) Přihlášení do Semaphore a napojení GitHub repo
 
 1. Otevři SemaphoreUI přes proxy:
@@ -150,8 +136,6 @@ Pak zkus:
   * „Ansible Deploy“
   * případně „Inventory render“ (pokud ho děláš)
 
----
-
 ## 8) Spusť deployment celé infrastruktury
 
 Doporučené pořadí:
@@ -164,8 +148,6 @@ V SemaphoreUI:
 
 * spusť job „bootstrap infra“ / „prod deploy“
 
----
-
 ## 9) Po stabilizaci: přepni na „komfortní režim“
 
 * v NPM:
@@ -173,8 +155,6 @@ V SemaphoreUI:
   * „Force SSL“
 * omez přístup:
   * 80/81 (jen z mgmt/VPN)
-
----
 
 ## 10) Co zálohovat, aby další recovery byl ještě rychlejší
 
@@ -189,8 +169,6 @@ Minimální:
 Ideální:
 
 * celou VM přes backup v Proxmox + repo stále v GitHubu.
-
----
 
 # Troubleshooting (nejčastější záseky)
 

@@ -22,7 +22,7 @@ cd homelab-bootstrap/nix
 reboot
 
 # 2. After reboot, apply host config
-ssh admin@<ip>
+ssh homelab@<ip>
 cd /opt/homelab-bootstrap/nix
 sudo nixos-rebuild switch --flake .#<hostname>
 ```

@@ -3,7 +3,6 @@
 {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
-    ../minimal/configuration.nix
   ];
 
   # Hardware configuration (adjust as needed)
@@ -24,10 +23,46 @@
 
   swapDevices = [ ];
 
+  # Base system configuration
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+
+  time.timeZone = "Europe/Prague";
+
+  # SSH
+  services.openssh.enable = true;
+  services.openssh.settings = {
+    PermitRootLogin = "no";
+    PasswordAuthentication = false;
+    KbdInteractiveAuthentication = false;
+  };
+
+  # Proxmox guest
+  services.qemuGuest.enable = true;
+
+  # Base user
+  users.users.homelab = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" "docker" ];
+    openssh.authorizedKeys.keys = [
+      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDOTm0wfJpY+JLZ7qIBGYjQxx5YqLL0VkBiXg8ZZxQ6yqD7YBfVNJXT1zxOvf6unUTB0Ur+R2RFXDP8/hJdyDhHpoyv2IcvBYOsk91xjU7HzKsqLgS+9Tf+QUIUCHK/7orXMjP8VUCw6DRZr50TTD2om9GwdKyJOXFiSypClPp6T25Qld036dNVyyYvYKVLdbP5ADgtLRigv4xK6MXHhf6fFQqvdNaB6eBvcupL3ijXZ5LiWliwcRaqUy6RRSulTSRFrN9EfxCEdcy4D4RNJuxlPzX96fV3ZmeLBx7K6EPRLFSXyrKuom9omO9Dcd7Mt5Y4QIpXc6iW7RccAXGE4s8UiGceyqItjRRaMlLi+yQn+VNeApnwvXGQLTDrsh45Nfc/TNlvP37xH3cSmNH8GwYJ+W6eapCzeA7tsAZo1F9wRYzgqk2GpFaUb/y2bREWf0WLPsw8REmCpEZ0+KkVcT7UD34uD5imXlVkHvvxYMpxuBDbaOPcVLqDEbaH7G3TySM="
+    ];
+  };
+
+  security.sudo.wheelNeedsPassword = false;
+
+  # Base tools
+  environment.systemPackages = with pkgs; [
+    git
+    curl
+    vim
+  ];
+
   networking.hostName = "semaphoreui";
 
-  # Extend homelab user with docker group
-  users.users.homelab.extraGroups = [ "wheel" "docker" ];
+  # Nix settings
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  system.stateVersion = "24.11";
 
   # Static IP
   networking.useDHCP = false;
@@ -56,11 +91,11 @@
 
   # Persist dirs (survives rebuilds)
   systemd.tmpfiles.rules = [
-    "d /opt/docker4u 0750 admin docker -"
-    "d /opt/docker4u/npm-data 0750 admin docker -"
-    "d /opt/docker4u/npm-letsencrypt 0750 admin docker -"
-    "d /opt/docker4u/semaphoreui 0750 admin docker -"
-    "d /opt/docker4u/postgres 0750 admin docker -"
+    "d /opt/docker4u 0750 homelab docker -"
+    "d /opt/docker4u/npm-data 0750 homelab docker -"
+    "d /opt/docker4u/npm-letsencrypt 0750 homelab docker -"
+    "d /opt/docker4u/semaphoreui 0750 homelab docker -"
+    "d /opt/docker4u/postgres 0750 homelab docker -"
     "d /opt/docker4u/secrets 0700 root root -"
   ];
 

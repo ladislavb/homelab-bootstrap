@@ -78,7 +78,7 @@ Remove the ISO from the VM before reboot.
 After reboot, SSH into the system and apply the flake:
 
 ```bash
-ssh admin@<ip-address>
+ssh homelab@<ip-address>
 
 # Repository is already at /opt/homelab-bootstrap
 sudo -i
@@ -95,7 +95,7 @@ After applying the flake, the system will have:
 ### Access the system
 
 ```bash
-ssh admin@192.168.0.99
+ssh homelab@192.168.0.99
 ```
 
 ### Troubleshooting
